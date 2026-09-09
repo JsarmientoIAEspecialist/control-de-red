@@ -49,6 +49,30 @@ function vendorFromMac(mac) {
   return OUI[prefix] || null;
 }
 
+// Respaldo online: si la tabla local no reconoce el prefijo, consulta la API
+// publica de fabricantes. Solo envia el prefijo OUI (3 primeros octetos), no
+// la MAC completa. Falla en silencio si no hay internet (la app sigue offline).
+function onlineVendor(mac) {
+  return new Promise((resolve) => {
+    if (!mac) return resolve(null);
+    const oui = mac.split(':').slice(0, 3).join(':');
+    const req = https.request(
+      { host: 'api.macvendors.com', path: '/' + oui, method: 'GET', timeout: 5000 },
+      (res) => {
+        let d = '';
+        res.on('data', (c) => (d += c));
+        res.on('end', () => {
+          if (res.statusCode === 200 && d && !/error/i.test(d)) resolve(d.trim());
+          else resolve(null);
+        });
+      }
+    );
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+    req.end();
+  });
+}
+
 // Decodifica entidades HTML numericas (&#70; -> F) y nombradas basicas.
 function decodeEntities(s) {
   return s
@@ -142,7 +166,9 @@ const FINGERPRINTS = [
 async function detectRouter() {
   const gateway = (await getGateway()) || '192.168.1.1';
   const mac = await macOf(gateway);
-  const macVendor = vendorFromMac(mac);
+  // Fabricante: primero tabla local (offline), luego respaldo online.
+  let macVendor = vendorFromMac(mac);
+  if (!macVendor) macVendor = await onlineVendor(mac);
   const panel = await fetchPanel(gateway);
 
   const haystack = [macVendor, panel.title, panel.server, panel.body || '']
