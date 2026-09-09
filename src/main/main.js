@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { scanNetwork, getLocalNetwork } = require('./scanner');
 const { createDriver } = require('./router/driver');
+const { detectRouter } = require('./router/detect');
 
 let mainWindow = null;
 let router = createDriver('unconfigured');
@@ -93,6 +94,14 @@ ipcMain.handle('device:setAlias', async (evt, { mac, name }) => {
 });
 
 ipcMain.handle('config:get', async () => loadConfig());
+
+ipcMain.handle('router:detect', async () => {
+  try {
+    return { ok: true, ...(await detectRouter()) };
+  } catch (e) {
+    return { ok: false, message: 'No se pudo detectar el router: ' + e.message };
+  }
+});
 
 ipcMain.handle('router:configure', async (evt, config) => {
   const cfg = loadConfig();

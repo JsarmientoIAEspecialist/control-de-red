@@ -44,8 +44,9 @@ const OUI = {
   '00E091': 'LG', 'A816B2': 'LG', 'C4438F': 'LG',
   // Nokia / Alcatel (routers ISP comunes en LatAm)
   '000FBB': 'Nokia', '9C28BF': 'Nokia',
-  // ZTE (routers ISP)
-  '4C09B4': 'ZTE', 'D871B8': 'ZTE', '9CA9E4': 'ZTE',
+  // ZTE (routers ISP, muy comunes en LatAm: F660/F680)
+  '4C09B4': 'ZTE', 'D871B8': 'ZTE', '9CA9E4': 'ZTE', '301F48': 'ZTE',
+  '344B50': 'ZTE', 'C4A366': 'ZTE', '8CE117': 'ZTE',
   // Espressif (IoT ESP32/ESP8266)
   '240AC4': 'Espressif IoT', '3C6105': 'Espressif IoT', 'A4CF12': 'Espressif IoT',
 };

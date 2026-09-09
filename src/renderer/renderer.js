@@ -182,7 +182,43 @@ async function openSettings() {
   $('routerPass').value = '';
   $('routerMsg').textContent = '';
   $('routerMsg').className = 'msg';
+  $('detectMsg').textContent = '';
+  $('detectMsg').className = 'msg';
   openModal('settingsModal');
+  // Si aun no hay router configurado, intentar detectarlo solo.
+  if (!r.model || r.model === 'unconfigured') {
+    detectRouter();
+  }
+}
+
+async function detectRouter() {
+  const msg = $('detectMsg');
+  const btn = $('btnDetect');
+  btn.disabled = true;
+  const prev = btn.textContent;
+  btn.textContent = 'Detectando…';
+  msg.className = 'msg';
+  msg.textContent = 'Analizando tu red…';
+  try {
+    const r = await window.api.detectRouter();
+    if (!r.ok) {
+      msg.className = 'msg err';
+      msg.textContent = r.message || 'No se pudo detectar.';
+      return;
+    }
+    // Autocompletar formulario.
+    if (r.suggestedDriver) $('routerModel').value = r.suggestedDriver;
+    if (r.gateway) $('routerHost').value = r.gateway;
+    msg.className = 'msg ok';
+    const conf = r.confidence ? ` (confianza ${r.confidence})` : '';
+    msg.textContent = `Router detectado: ${r.label}${conf}. Panel: ${r.panelUrl}`;
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = 'Error al detectar: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = prev;
+  }
 }
 
 async function saveSettings() {
@@ -210,6 +246,7 @@ function escapeAttr(s) {
 $('btnScan').addEventListener('click', scan);
 $('btnSettings').addEventListener('click', openSettings);
 $('btnCancelSettings').addEventListener('click', () => closeModal('settingsModal'));
+$('btnDetect').addEventListener('click', detectRouter);
 $('btnSaveSettings').addEventListener('click', saveSettings);
 $('btnCancelLimit').addEventListener('click', () => closeModal('limitModal'));
 $('btnApplyLimit').addEventListener('click', applyLimit);

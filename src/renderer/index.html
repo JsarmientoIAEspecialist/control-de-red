@@ -78,9 +78,12 @@
           Los limites de velocidad, el bloqueo y la prioridad se aplican a traves
           del panel de tu router. Indica tu modelo y las credenciales de admin.
         </p>
+        <button id="btnDetect" class="btn primary" style="width:100%;margin-top:6px;">🔍 Detectar mi router automáticamente</button>
+        <div id="detectMsg" class="msg"></div>
         <label>Modelo
           <select id="routerModel">
             <option value="unconfigured">— Selecciona tu router —</option>
+            <option value="zte-f6xx">ZTE F660 / F680 (ONT)</option>
             <option value="tplink-generic">TP-Link (panel web)</option>
             <option value="huawei-hg8245">Huawei HG8245 / ONT</option>
             <option value="mikrotik">MikroTik (RouterOS)</option>

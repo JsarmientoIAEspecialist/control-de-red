@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('api', {
   },
   setAlias: (mac, name) => ipcRenderer.invoke('device:setAlias', { mac, name }),
   getConfig: () => ipcRenderer.invoke('config:get'),
+  detectRouter: () => ipcRenderer.invoke('router:detect'),
   configureRouter: (config) => ipcRenderer.invoke('router:configure', config),
   routerAction: (payload) => ipcRenderer.invoke('router:action', payload),
 });
