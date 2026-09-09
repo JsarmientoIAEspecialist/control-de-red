@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Control de Red</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">CR</div>
+        <div>
+          <h1>Control de Red</h1>
+          <p id="netSummary" class="muted">Detectando red…</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnSettings" class="btn ghost" title="Configurar router">⚙ Router</button>
+        <button id="btnScan" class="btn primary">Escanear red</button>
+      </div>
+    </header>
+
+    <div id="progressWrap" class="progress-wrap hidden">
+      <div id="progressBar" class="progress-bar"></div>
+      <span id="progressText" class="progress-text">Escaneando… 0%</span>
+    </div>
+
+    <main>
+      <section class="stats">
+        <div class="stat">
+          <span class="stat-num" id="statTotal">0</span>
+          <span class="stat-label">Dispositivos</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statOnline">0</span>
+          <span class="stat-label">En linea</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statLimited">0</span>
+          <span class="stat-label">Con limite</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statBlocked">0</span>
+          <span class="stat-label">Bloqueados</span>
+        </div>
+      </section>
+
+      <div id="routerBanner" class="banner hidden"></div>
+
+      <section class="table-wrap">
+        <table id="devTable">
+          <thead>
+            <tr>
+              <th>Estado</th>
+              <th>Dispositivo</th>
+              <th>IP</th>
+              <th>MAC</th>
+              <th>Fabricante</th>
+              <th>Latencia</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="devBody">
+            <tr class="empty">
+              <td colspan="7">Pulsa <strong>Escanear red</strong> para descubrir los dispositivos conectados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <!-- Modal: configurar router -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-card">
+        <h2>Configurar router</h2>
+        <p class="muted">
+          Los limites de velocidad, el bloqueo y la prioridad se aplican a traves
+          del panel de tu router. Indica tu modelo y las credenciales de admin.
+        </p>
+        <label>Modelo
+          <select id="routerModel">
+            <option value="unconfigured">— Selecciona tu router —</option>
+            <option value="tplink-generic">TP-Link (panel web)</option>
+            <option value="huawei-hg8245">Huawei HG8245 / ONT</option>
+            <option value="mikrotik">MikroTik (RouterOS)</option>
+            <option value="openwrt">OpenWrt (SSH)</option>
+          </select>
+        </label>
+        <label>IP del panel
+          <input id="routerHost" type="text" placeholder="192.168.1.1" />
+        </label>
+        <label>Usuario admin
+          <input id="routerUser" type="text" placeholder="admin" />
+        </label>
+        <label>Contrasena admin
+          <input id="routerPass" type="password" placeholder="••••••••" />
+        </label>
+        <div id="routerMsg" class="msg"></div>
+        <div class="modal-actions">
+          <button id="btnCancelSettings" class="btn ghost">Cancelar</button>
+          <button id="btnSaveSettings" class="btn primary">Conectar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: limite de velocidad -->
+    <div id="limitModal" class="modal hidden">
+      <div class="modal-card">
+        <h2>Limitar velocidad</h2>
+        <p class="muted" id="limitTarget"></p>
+        <label>Bajada maxima (Mbps)
+          <input id="limitDown" type="number" min="0" step="0.5" placeholder="5" />
+        </label>
+        <label>Subida maxima (Mbps)
+          <input id="limitUp" type="number" min="0" step="0.5" placeholder="2" />
+        </label>
+        <div class="modal-actions">
+          <button id="btnCancelLimit" class="btn ghost">Cancelar</button>
+          <button id="btnApplyLimit" class="btn primary">Aplicar limite</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="foot">
+      <span class="muted" id="footNote">Solo funciona en tu propia red. El control se aplica a traves de tu router.</span>
+    </footer>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

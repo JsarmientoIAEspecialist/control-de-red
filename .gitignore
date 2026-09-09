@@ -1,0 +1,17 @@
+# Dependencias
+node_modules/
+
+# Salida de compilacion (el instalador se publica como Release, no en el repo)
+dist/
+
+# Sistema
+Thumbs.db
+.DS_Store
+
+# Logs
+npm-debug.log*
+*.log
+
+# Historial de la herramienta
+.remember/
+memory/
